@@ -18,20 +18,13 @@ def create_table(conn, create_table_sql):
     except sqlite3.Error as e:
         print(e)
 
-# Example usage
-database = "nba_stats.db"
+def add_column_to_table(db_file: str, table_name: str, new_column_name: str, column_type: str):
+    conn = sqlite3.connect(db_file)
+    cursor = conn.cursor()
 
-sql_create_players_table = """CREATE TABLE IF NOT EXISTS players (
-                                    id integer PRIMARY KEY,
-                                    name text NOT NULL,
-                                    stats text
-                                );"""
+    alter_table_sql = f"ALTER TABLE {table_name} ADD COLUMN {new_column_name} {column_type};"
 
-# Create a database connection
-conn = create_connection(database)
+    cursor.execute(alter_table_sql)
 
-# Create table
-if conn is not None:
-    create_table(conn, sql_create_players_table)
-else:
-    print("Error! Cannot create the database connection.")
+    conn.commit()
+    conn.close()
